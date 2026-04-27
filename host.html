@@ -520,196 +520,776 @@ const HOST_PASSWORD = "host2024";
    All question types are shown.
 ───────────────────────────────────────── */
 const EXAMPLE_QUESTIONS = [
+
   /* ── MCQ ─────────────────────────────── */
+
   {
-    id: "eq-1", type: "mcq", co: "CO1.1", points: 10, timeLimit: 35,
-    text: "Which enzyme is deficient in Phenylketonuria (PKU)?",
+    id: "eq-1", type: "mcq", co: "CO2.1", points: 10, timeLimit: 35,
+    text: "Which property of amino acids is exploited by ion-exchange chromatography for their separation?",
     options: [
-      "Tyrosinase",
-      "Phenylalanine hydroxylase",
-      "Homogentisic acid oxidase",
-      "Branched-chain alpha-ketoacid dehydrogenase"
+      "Molecular weight",
+      "Isoelectric point and charge",
+      "Solubility in organic solvents",
+      "Optical rotation"
     ],
     answer: "B",
     acceptedAnswers: ["B"],
-    explanation: "PKU is caused by deficiency of phenylalanine hydroxylase (PAH), which normally converts phenylalanine → tyrosine. Accumulation of phenylalanine → phenylpyruvate → musty/mousy urine odour."
-  },
-  {
-    id: "eq-2", type: "mcq", co: "CO2.1", points: 10, timeLimit: 35,
-    text: "The rate-limiting enzyme of the Urea Cycle is CPS I. Which allosteric activator is absolutely required for its activity?",
-    options: [
-      "ATP",
-      "Acetyl-CoA",
-      "N-Acetylglutamate (NAG)",
-      "Ornithine"
-    ],
-    answer: "C",
-    acceptedAnswers: ["C"],
-    explanation: "Carbamoyl Phosphate Synthetase I (CPS I) is activated allosterically by N-Acetylglutamate (NAG). NAG is synthesised from acetyl-CoA + glutamate by NAG synthase, which is itself activated by arginine."
-  },
-  {
-    id: "eq-3", type: "mcq", co: "CO1.2", points: 10, timeLimit: 40,
-    text: "A 2-week-old neonate has feeding difficulty, vomiting, and urine smelling of 'burnt sugar'. Which amino acids must be immediately restricted?",
-    options: [
-      "Phenylalanine, Tyrosine, Tryptophan",
-      "Leucine, Isoleucine, Valine",
-      "Methionine, Cysteine, Homocysteine",
-      "Lysine, Threonine, Serine"
-    ],
-    answer: "B",
-    acceptedAnswers: ["B"],
-    explanation: "Maple Syrup Urine Disease (MSUD) — deficiency of Branched-Chain alpha-Keto Acid Dehydrogenase (BCKDH). Leucine, Isoleucine, and Valine (branched-chain amino acids) must be restricted."
-  },
-  {
-    id: "eq-4", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
-    text: "Alkaptonuria is caused by deficiency of which enzyme, leading to accumulation of homogentisic acid?",
-    options: [
-      "Tyrosinase",
-      "Phenylalanine hydroxylase",
-      "Homogentisic acid oxidase",
-      "Maleylacetoacetate isomerase"
-    ],
-    answer: "C",
-    acceptedAnswers: ["C"],
-    explanation: "Homogentisic acid oxidase deficiency → homogentisate accumulates → oxidises to a dark pigment (ochronosis), causing black urine on standing, arthritis, and pigmentation of cartilage/sclera."
-  },
-  {
-    id: "eq-5", type: "mcq", co: "CO3.1", points: 10, timeLimit: 30,
-    text: "Which vitamin is required as a coenzyme for ALL transamination (aminotransferase) reactions?",
-    options: [
-      "Thiamine (B1)",
-      "Riboflavin (B2)",
-      "Pyridoxine (B6) — as Pyridoxal Phosphate (PLP)",
-      "Cobalamin (B12)"
-    ],
-    answer: "C",
-    acceptedAnswers: ["C"],
-    explanation: "Pyridoxal Phosphate (PLP), the active form of Vitamin B6, acts as the amino-group carrier in all transamination reactions. It shuttles amino groups between amino acids and alpha-keto acids."
+    explanation: "Separation depends on net charge of amino acids at a given pH, which is determined by their isoelectric point (pI)."
   },
 
-  /* ── ASSERTION-REASON ─────────────────── */
   {
-    id: "eq-6", type: "assertion", co: "CO1.2", points: 10, timeLimit: 40,
-    text: "Assertion (A): In classical PKU, tyrosine becomes a dietary essential amino acid.\nReason (R): Phenylalanine hydroxylase deficiency prevents endogenous synthesis of tyrosine from phenylalanine.",
+    id: "eq-2", type: "mcq", co: "CO2.1", points: 10, timeLimit: 35,
+    text: "At its isoelectric point (pI), an amino acid carries:",
     options: [
-      "Both A and R are true; R correctly explains A",
-      "Both A and R are true; R does NOT explain A",
-      "A is true, R is false",
-      "A is false, R is true"
+      "Net positive charge",
+      "Net negative charge",
+      "Zero net charge",
+      "Maximum ionisation"
+    ],
+    answer: "C",
+    acceptedAnswers: ["C"],
+    explanation: "At pI, positive and negative charges balance, resulting in zero net charge."
+  },
+
+  {
+    id: "eq-3", type: "mcq", co: "CO2.1", points: 10, timeLimit: 35,
+    text: "Which of the following amino acids is classified as aromatic?",
+    options: [
+      "Leucine",
+      "Lysine",
+      "Phenylalanine",
+      "Glutamine"
+    ],
+    answer: "C",
+    acceptedAnswers: ["C"],
+    explanation: "Phenylalanine contains an aromatic benzene ring in its side chain."
+  },
+
+  {
+    id: "eq-4", type: "mcq", co: "CO2.1", points: 10, timeLimit: 35,
+    text: "Hydroxyproline is formed from proline by which reaction?",
+    options: [
+      "Transamination",
+      "Hydroxylation requiring Vitamin C",
+      "Carboxylation requiring Vitamin K",
+      "Methylation"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Proline is hydroxylated to hydroxyproline in collagen synthesis, requiring Vitamin C."
+  },
+
+  {
+    id: "eq-5", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "The first and rate-limiting step in catecholamine synthesis from tyrosine is:",
+    options: [
+      "Tyrosine → DOPA by tyrosine hydroxylase",
+      "DOPA → Dopamine by DOPA decarboxylase",
+      "Dopamine → Norepinephrine by dopamine-β-hydroxylase",
+      "Norepinephrine → Epinephrine by PNMT"
     ],
     answer: "A",
     acceptedAnswers: ["A"],
-    explanation: "PAH converts Phe → Tyr. Without PAH, tyrosine cannot be made endogenously and must be supplied in the diet — making it conditionally essential. R correctly explains A."
+    explanation: "Tyrosine hydroxylase catalyzes the rate-limiting conversion of tyrosine to DOPA."
   },
 
-  /* ── FILL IN THE BLANK ────────────────── */
   {
-    id: "eq-7", type: "fitb", co: "CO2.1", points: 10, timeLimit: 30,
-    text: "The only two purely ketogenic amino acids — which cannot contribute to net gluconeogenesis — are _______ and _______.",
-    answer: "leucine",
-    acceptedAnswers: ["leucine", "lysine"],
-    explanation: "Leucine and Lysine are the only purely ketogenic amino acids. They are catabolised exclusively to Acetyl-CoA / Acetoacetate and therefore cannot give rise to net glucose synthesis."
-  },
-  {
-    id: "eq-8", type: "fitb", co: "CO3.1", points: 10, timeLimit: 30,
-    text: "The universal methyl donor in the body — formed from methionine + ATP — is _______.",
-    answer: "SAM",
-    acceptedAnswers: ["SAM", "S-adenosylmethionine", "adenosylmethionine"],
-    explanation: "S-Adenosylmethionine (SAM) is the universal methyl donor. After donating its methyl group it becomes SAH (S-adenosylhomocysteine), which is then hydrolysed to homocysteine."
-  },
-
-  /* ── WHO AM I ─────────────────────────── */
-  {
-    id: "eq-9", type: "whoami", co: "CO2.1", points: 15, timeLimit: 60,
-    text: "Who Am I? Read the clues carefully.",
-    clues: [
-      "I am the only molecule that crosses the mitochondrial membrane in the Urea Cycle.",
-      "I carry two nitrogen atoms but I am not Urea.",
-      "If the transporter for my export fails, ammonia rises and orotic acid spills into the urine.",
-      "I am synthesised in the mitochondria from ornithine + carbamoyl phosphate."
+    id: "eq-6", type: "mcq", co: "CO3.1", points: 10, timeLimit: 35,
+    text: "Pyridoxal phosphate (PLP) is required as a cofactor in the synthesis of which neurotransmitter from glutamate?",
+    options: [
+      "Dopamine",
+      "Serotonin",
+      "GABA",
+      "Acetylcholine"
     ],
-    answer: "citrulline",
-    acceptedAnswers: ["citrulline"],
-    explanation: "Citrulline is synthesised in the mitochondria (ornithine + carbamoyl phosphate → citrulline via OTC) and exits via the ornithine-citrulline antiporter. OTC deficiency → hyperammonaemia + orotic aciduria."
+    answer: "C",
+    acceptedAnswers: ["C"],
+    explanation: "PLP (Vitamin B6) is required for decarboxylation of glutamate to form GABA."
   },
 
-  /* ── CONNECTION ROUND ─────────────────── */
   {
-    id: "eq-10", type: "connection", co: "CO1.1", points: 15, timeLimit: 50,
-    text: "Connect the clues and identify the amino acid or molecule.",
-    clues: [
-      "I am a sulfur-containing intermediate produced during methionine catabolism.",
-      "Elevated levels of me are an independent risk factor for atherosclerosis.",
-      "I require Vitamin B12 to be remethylated back to methionine.",
-      "I require Vitamin B6 to be converted forward to cysteine via the transsulfuration pathway."
+    id: "eq-7", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "Serotonin (5-HT) is synthesised from which amino acid?",
+    options: [
+      "Tyrosine",
+      "Tryptophan",
+      "Histidine",
+      "Phenylalanine"
     ],
-    answer: "homocysteine",
-    acceptedAnswers: ["homocysteine"],
-    explanation: "Homocysteine: elevated in Homocystinuria (CBS deficiency) → lens dislocation, DVT, atherosclerosis. Remethylation needs B12 + folate (via MTHFR). Transsulfuration to cystathionine needs B6 (CBS)."
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Tryptophan is the precursor for serotonin via hydroxylation and decarboxylation."
   },
 
-  /* ── SEQUENCE ARRANGE ────────────────── */
   {
-    id: "eq-11", type: "sequence", co: "CO2.1", points: 15, timeLimit: 60,
-    text: "Arrange the steps of the Urea Cycle in the correct order:",
-    items: [
-      { key:"A", text:"Argininosuccinate is cleaved to arginine + fumarate (argininosuccinate lyase)." },
-      { key:"B", text:"Citrulline + aspartate → argininosuccinate (argininosuccinate synthetase)." },
-      { key:"C", text:"Arginase hydrolyses arginine → urea + ornithine." },
-      { key:"D", text:"NH3 + CO2 + 2ATP → carbamoyl phosphate (CPS I, mitochondria)." },
-      { key:"E", text:"Carbamoyl phosphate + ornithine → citrulline (OTC, mitochondria)." }
+    id: "eq-8", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "Melanin pigment is synthesised from which amino acid via DOPA?",
+    options: [
+      "Tryptophan",
+      "Tyrosine",
+      "Phenylalanine",
+      "Methionine"
     ],
-    answer: "DEBAC",
-    acceptedAnswers: ["DEBAC"],
-    explanation: "D→E→B→A→C: CPS I → OTC → Argininosuccinate synthetase → Argininosuccinate lyase → Arginase. Steps D & E are mitochondrial; B, A, C are cytosolic."
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Tyrosine is converted to DOPA, which is the precursor for melanin synthesis."
   },
 
-  /* ── MATCH THE FOLLOWING ─────────────── */
   {
-    id: "eq-12", type: "match", co: "CO2.2", points: 15, timeLimit: 60,
-    text: "Match each enzyme deficiency (Column A) with its characteristic clinical finding (Column B):",
-    pairs: [
-      { left: "Phenylalanine hydroxylase" },
-      { left: "Homogentisic acid oxidase" },
-      { left: "Cystathionine beta-synthase" },
-      { left: "BCKDH complex" }
+    id: "eq-9", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "Histamine is formed by decarboxylation of:",
+    options: [
+      "Histidine",
+      "Arginine",
+      "Lysine",
+      "Ornithine"
     ],
-    rightOptions: [
-      "Musty/mousy urine odour; intellectual disability",
-      "Black urine on standing; ochronosis",
-      "Lens dislocation; DVT; atherosclerosis",
-      "Maple syrup urine odour; ketoacidosis"
-    ],
-    answer: "Musty/mousy urine odour; intellectual disability|Black urine on standing; ochronosis|Lens dislocation; DVT; atherosclerosis|Maple syrup urine odour; ketoacidosis",
-    acceptedAnswers: ["Musty/mousy urine odour; intellectual disability|Black urine on standing; ochronosis|Lens dislocation; DVT; atherosclerosis|Maple syrup urine odour; ketoacidosis"],
-    explanation: "PAH → PKU (musty odour). HGA oxidase → Alkaptonuria (black urine). CBS → Homocystinuria (lens dislocation, DVT). BCKDH → MSUD (maple syrup odour)."
+    answer: "A",
+    acceptedAnswers: ["A"],
+    explanation: "Histidine is decarboxylated by histidine decarboxylase to form histamine."
   },
 
-  /* ── ERROR SPOTTING ──────────────────── */
   {
-    id: "eq-13", type: "error", co: "CO2.1", points: 15, timeLimit: 45,
-    text: 'Spot the biochemical error:\n\n"In the Urea Cycle, BOTH nitrogen atoms of urea are directly provided by free ammonia (NH3) generated by oxidative deamination of glutamate in the liver."',
-    answer: "aspartate",
-    acceptedAnswers: ["aspartate", "second nitrogen", "aspartic"],
-    explanation: "Error: Only the FIRST nitrogen comes from free NH3 (via carbamoyl phosphate → CPS I). The SECOND nitrogen is donated by the amino group of ASPARTATE (added at the argininosuccinate synthetase step)."
+    id: "eq-10", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "Creatine biosynthesis involves which three amino acids?",
+    options: [
+      "Glycine, Arginine, and Methionine",
+      "Glycine, Lysine, and Serine",
+      "Alanine, Arginine, and Methionine",
+      "Glycine, Ornithine, and SAM"
+    ],
+    answer: "A",
+    acceptedAnswers: ["A"],
+    explanation: "Creatine is synthesized from glycine, arginine, and methionine (via SAM)."
+  },
+  {
+    id: "eq-11", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "Fumarate released from argininosuccinate enters which metabolic pathway?",
+    options: [
+      "Glycolysis",
+      "Fatty acid synthesis",
+      "TCA (Krebs) cycle",
+      "Direct gluconeogenesis"
+    ],
+    answer: "C",
+    acceptedAnswers: ["C"],
+    explanation: "Fumarate enters the TCA cycle, linking urea cycle with energy metabolism via the aspartate–argininosuccinate shunt."
+  },
+
+  {
+    id: "eq-12", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "A neonate with hyperammonaemia, absent citrulline, and no orotic aciduria most likely has deficiency of:",
+    options: [
+      "Argininosuccinate synthetase",
+      "OTC",
+      "CPS-I",
+      "Arginase"
+    ],
+    answer: "C",
+    acceptedAnswers: ["C"],
+    explanation: "CPS-I deficiency causes severe hyperammonaemia with low citrulline and no orotic aciduria (mitochondrial step affected)."
+  },
+
+  {
+    id: "eq-13", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "Which statement about female carriers of OTC deficiency is correct?",
+    options: [
+      "Females are never affected",
+      "Heterozygous females can have symptoms due to lyonisation",
+      "Only males are symptomatic",
+      "Females always have severe neonatal onset"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Random X-inactivation (lyonisation) causes variable expression of OTC deficiency in heterozygous females."
+  },
+
+  {
+    id: "eq-14", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "Citrullinemia type I is caused by deficiency of:",
+    options: [
+      "Ornithine transcarbamylase",
+      "Argininosuccinate synthetase",
+      "Argininosuccinate lyase",
+      "Arginase"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Argininosuccinate synthetase deficiency blocks citrulline conversion leading to citrullinemia type I."
+  },
+
+  {
+    id: "eq-15", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "Argininaemia (arginase deficiency) presents differently because:",
+    options: [
+      "Severe hyperammonaemia",
+      "Guanidino compounds accumulate and hyperammonaemia is mild",
+      "It causes orotic aciduria",
+      "It presents only in neonates"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Arginase deficiency leads to accumulation of guanidino compounds with comparatively mild hyperammonaemia."
+  },
+
+  {
+    id: "eq-16", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "Sodium benzoate lowers ammonia by conjugating with which amino acid?",
+    options: [
+      "Glutamine",
+      "Arginine",
+      "Glycine",
+      "Lysine"
+    ],
+    answer: "C",
+    acceptedAnswers: ["C"],
+    explanation: "Sodium benzoate conjugates glycine to form hippurate, facilitating nitrogen excretion."
+  },
+
+  {
+    id: "eq-17", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "A 4-month-old infant with chronic diarrhea, dermatitis, alopecia after weaning is most likely due to:",
+    options: [
+      "Acrodermatitis enteropathica affecting tryptophan metabolism",
+      "Hartnup disease causing neutral amino acid malabsorption",
+      "Maple Syrup Urine Disease",
+      "Cystinuria"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Hartnup disease causes defective transport of neutral amino acids, leading to pellagra-like features."
+  },
+
+  {
+    id: "eq-18", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "In Maple Syrup Urine Disease, the amino acid mainly responsible for neurotoxicity is:",
+    options: [
+      "Valine",
+      "Isoleucine",
+      "Leucine",
+      "Methionine"
+    ],
+    answer: "C",
+    acceptedAnswers: ["C"],
+    explanation: "Leucine is the most neurotoxic branched-chain amino acid in MSUD causing encephalopathy."
+  },
+
+  {
+    id: "eq-19", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "A child with succinylacetone in urine most likely has deficiency of:",
+    options: [
+      "Tyrosine aminotransferase",
+      "Homogentisate oxidase",
+      "Fumarylacetoacetate hydrolase",
+      "Phenylalanine hydroxylase"
+    ],
+    answer: "C",
+    acceptedAnswers: ["C"],
+    explanation: "Fumarylacetoacetate hydrolase deficiency causes tyrosinemia type I with succinylacetone accumulation."
+  },
+
+  {
+    id: "eq-20", type: "mcq", co: "CO2.1", points: 10, timeLimit: 35,
+    text: "A child with PKU must follow which dietary modification?",
+    options: [
+      "Restrict tyrosine and methionine",
+      "Restrict phenylalanine and supplement tyrosine",
+      "Restrict leucine only",
+      "Increase tryptophan intake"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "PKU requires phenylalanine restriction and tyrosine supplementation due to PAH deficiency."
+  },
+
+  {
+    id: "eq-21", type: "mcq", co: "CO2.1", points: 10, timeLimit: 35,
+    text: "A patient with generalized hypopigmentation, photophobia and visual defects likely has deficiency of:",
+    options: [
+      "Phenylalanine hydroxylase",
+      "Tyrosinase",
+      "Homogentisate oxidase",
+      "Dihydropteridine reductase"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Tyrosinase deficiency impairs melanin synthesis leading to albinism."
+  },
+    {
+    id: "eq-22", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "A 40-year-old man with dark urine on standing, ochronosis and arthritis most likely has accumulation of:",
+    options: [
+      "Phenylpyruvate",
+      "Homocysteine",
+      "Homogentisic acid",
+      "Succinylacetone"
+    ],
+    answer: "C",
+    acceptedAnswers: ["C"],
+    explanation: "Homogentisic acid accumulates in alkaptonuria due to homogentisate oxidase deficiency, causing ochronosis and arthritis."
+  },
+
+  {
+    id: "eq-23", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "A patient with marfanoid habitus, lens subluxation and homocystinuria most likely has deficiency of:",
+    options: [
+      "Cystathionine β-synthase",
+      "Methionine synthase",
+      "Homogentisate oxidase",
+      "Branched-chain ketoacid dehydrogenase"
+    ],
+    answer: "A",
+    acceptedAnswers: ["A"],
+    explanation: "CBS deficiency blocks transsulfuration pathway causing homocystinuria with thromboembolism and lens dislocation."
+  },
+
+  {
+    id: "eq-24", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "In BH4-deficient PKU, in addition to phenylalanine restriction, which is required?",
+    options: [
+      "Histidine supplementation",
+      "Dopamine and serotonin precursor supplementation",
+      "Vitamin C only",
+      "Homogentisic acid supplementation"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "BH4 deficiency affects neurotransmitter synthesis (dopamine, serotonin), requiring their precursor replacement."
+  },
+
+  {
+    id: "eq-25", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "A child with palmoplantar hyperkeratosis and corneal ulcers most likely has:",
+    options: [
+      "Tyrosinemia type II",
+      "Alkaptonuria",
+      "PKU",
+      "MSUD"
+    ],
+    answer: "A",
+    acceptedAnswers: ["A"],
+    explanation: "Tyrosinemia type II due to tyrosine aminotransferase deficiency causes skin and eye lesions."
+  },
+
+  {
+    id: "eq-26", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "A neonate with liver failure, renal dysfunction and cabbage-like odor has diagnostic metabolite:",
+    options: [
+      "Homogentisate",
+      "Succinylacetone",
+      "Phenylacetate",
+      "Branched-chain ketoacids"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Succinylacetone accumulation is diagnostic of tyrosinemia type I (fumarylacetoacetate hydrolase deficiency)."
+  },
+
+  {
+    id: "eq-27", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "In hypermethioninemia, which amino acid supplementation promotes alternative metabolism?",
+    options: [
+      "Glycine",
+      "Cysteine",
+      "Tyrosine",
+      "Histidine"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Cysteine becomes essential in methionine cycle defects as transsulfuration is impaired."
+  },
+
+  {
+    id: "eq-28", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "Which vitamin may improve some cases of maple syrup urine disease?",
+    options: [
+      "Thiamine (B1)",
+      "Riboflavin",
+      "Vitamin C",
+      "Vitamin K"
+    ],
+    answer: "A",
+    acceptedAnswers: ["A"],
+    explanation: "Thiamine acts as cofactor for branched-chain α-ketoacid dehydrogenase complex."
+  },
+
+  {
+    id: "eq-29", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "In albinism, increased risk of complications is mainly due to:",
+    options: [
+      "Kidney stones",
+      "UV sensitivity leading to skin cancers",
+      "Hyperammonemia",
+      "Atherosclerosis"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Melanin deficiency reduces UV protection leading to increased skin cancer risk."
+  },
+
+  {
+    id: "eq-30", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "Alkaptonuria affects which metabolic pathway?",
+    options: [
+      "Branched-chain amino acid degradation",
+      "Aromatic amino acid degradation",
+      "Urea cycle",
+      "Methionine cycle"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Alkaptonuria is a defect in tyrosine and phenylalanine (aromatic amino acid) degradation."
+  },
+
+  {
+    id: "eq-31", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "The characteristic odor in maple syrup urine disease is due to:",
+    options: [
+      "Homogentisic acid",
+      "Sotolon",
+      "Succinylacetone",
+      "Phenylacetate"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Sotolon contributes to the sweet maple syrup odor in MSUD."
+  },
+
+  {
+    id: "eq-32", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "The most life-threatening complication of untreated homocystinuria is:",
+    options: [
+      "Hyperpigmentation",
+      "Renal failure",
+      "Thromboembolism",
+      "Cataract only"
+    ],
+    answer: "C",
+    acceptedAnswers: ["C"],
+    explanation: "Homocystinuria leads to endothelial damage and thrombosis causing life-threatening embolic events."
+  },
+
+  {
+    id: "eq-33", type: "mcq", co: "CO2.1", points: 10, timeLimit: 35,
+    text: "In albinism, the blocked step is:",
+    options: [
+      "Tyrosine → DOPA",
+      "Phenylalanine → Tyrosine",
+      "Homogentisate → Maleylacetoacetate",
+      "Methionine → Homocysteine"
+    ],
+    answer: "A",
+    acceptedAnswers: ["A"],
+    explanation: "Tyrosinase deficiency blocks conversion of tyrosine to DOPA in melanin synthesis."
+  },
+
+  {
+    id: "eq-34", type: "mcq", co: "CO2.1", points: 10, timeLimit: 35,
+    text: "Poorly controlled maternal PKU most commonly causes in fetus:",
+    options: [
+      "Neural tube defects only",
+      "Congenital heart disease and microcephaly",
+      "Alkaptonuria",
+      "Hyperuricemia"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Maternal phenylalanine toxicity causes teratogenic effects including microcephaly and congenital heart disease."
+  },
+
+  {
+    id: "eq-35", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "Nitisinone in tyrosinemia type I inhibits:",
+    options: [
+      "Tyrosinase",
+      "4-hydroxyphenylpyruvate dioxygenase",
+      "Phenylalanine hydroxylase",
+      "Cystathionine synthase"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Nitisinone blocks 4-hydroxyphenylpyruvate dioxygenase preventing toxic metabolite formation."
+  },
+
+  {
+    id: "eq-36", type: "mcq", co: "CO2.2", points: 10, timeLimit: 35,
+    text: "In MSUD, fasting is dangerous because it:",
+    options: [
+      "Increases tyrosine accumulation",
+      "Increases branched-chain amino acids due to protein catabolism",
+      "Increases homogentisic acid",
+      "Decreases melanin synthesis"
+    ],
+    answer: "B",
+    acceptedAnswers: ["B"],
+    explanation: "Fasting increases endogenous protein breakdown raising toxic branched-chain amino acids in MSUD."
+  },
+  {
+  id: "eq-37",
+  type: "mcq",
+  co: "CO2.2",
+  points: 10,
+  timeLimit: 35,
+  text: "Which molecule is the obligatory allosteric activator of Carbamoyl Phosphate Synthetase I (CPS-I)?",
+  options: [
+    "Citrulline",
+    "N-Acetylglutamate",
+    "Ornithine",
+    "Arginine"
+  ],
+  answer: "B",
+  acceptedAnswers: ["B"],
+  explanation: "N-Acetylglutamate is the essential allosteric activator of CPS-I in the urea cycle, regulating ammonia detoxification. → CO2.2 (Nitrogen metabolism and inborn errors)"
+},
+
+{
+  id: "eq-38",
+  type: "mcq",
+  co: "CO2.2",
+  points: 10,
+  timeLimit: 35,
+  text: "OTC deficiency in the urea cycle leads to all EXCEPT:",
+  options: [
+    "Hyperammonemia",
+    "Elevated orotic acid in urine",
+    "Absence of citrulline",
+    "Elevated carbamoyl phosphate in mitochondria"
+  ],
+  answer: "D",
+  acceptedAnswers: ["D"],
+  explanation: "Carbamoyl phosphate accumulates in cytosol, not mitochondria, causing orotic aciduria. → CO2.2 (Urea cycle disorders)"
+},
+
+{
+  id: "eq-39",
+  type: "mcq",
+  co: "CO2.1",
+  points: 10,
+  timeLimit: 35,
+  text: "The coenzyme required for all transamination reactions is:",
+  options: [
+    "Thiamine pyrophosphate",
+    "Pyridoxal phosphate",
+    "Biotin",
+    "NADH"
+  ],
+  answer: "B",
+  acceptedAnswers: ["B"],
+  explanation: "Pyridoxal phosphate (Vitamin B6) is essential for amino group transfer in amino acid metabolism. → CO2.1 (Amino acid chemistry and protein metabolism)"
+},
+
+{
+  id: "eq-40",
+  type: "mcq",
+  co: "CO2.2",
+  points: 10,
+  timeLimit: 35,
+  text: "Tyrosinemia type I is caused by deficiency of:",
+  options: [
+    "Tyrosine aminotransferase",
+    "Fumarylacetoacetate hydrolase",
+    "Homogentisate oxidase",
+    "Phenylalanine hydroxylase"
+  ],
+  answer: "B",
+  acceptedAnswers: ["B"],
+  explanation: "Fumarylacetoacetate hydrolase deficiency leads to accumulation of succinylacetone causing liver failure. → CO2.2 (Amino acid degradation disorders)"
+},
+
+{
+  id: "eq-41",
+  type: "mcq",
+  co: "CO2.2",
+  points: 10,
+  timeLimit: 35,
+  text: "Fumarate produced in the urea cycle directly enters which pathway?",
+  options: [
+    "Glycogenesis",
+    "TCA cycle",
+    "Ketogenesis",
+    "Pentose phosphate pathway"
+  ],
+  answer: "B",
+  acceptedAnswers: ["B"],
+  explanation: "Fumarate links urea cycle with TCA cycle via aspartate–argininosuccinate shunt. → CO2.2 (Nitrogen metabolism integration)"
+},
+
+{
+  id: "eq-42",
+  type: "mcq",
+  co: "CO2.2",
+  points: 10,
+  timeLimit: 35,
+  text: "Glycine conjugation of benzoate produces which compound?",
+  options: [
+    "Hippuric acid",
+    "Uric acid",
+    "Citrulline",
+    "Orotic acid"
+  ],
+  answer: "A",
+  acceptedAnswers: ["A"],
+  explanation: "Glycine + benzoate → hippuric acid, a detoxification pathway for ammonia disposal. → CO2.2 (Ammonia detoxification)"
+},
+
+{
+  id: "eq-43",
+  type: "mcq",
+  co: "CO2.2",
+  points: 10,
+  timeLimit: 35,
+  text: "BH4 deficiency results in decreased synthesis of:",
+  options: [
+    "Dopamine and serotonin",
+    "GABA and glutamate",
+    "Acetylcholine and histamine",
+    "Epinephrine only"
+  ],
+  answer: "A",
+  acceptedAnswers: ["A"],
+  explanation: "BH4 is required for hydroxylation of tyrosine and tryptophan → dopamine and serotonin synthesis affected. → CO2.2 (Amino acid derived products)"
+},
+
+{
+  id: "eq-44",
+  type: "mcq",
+  co: "CO2.2",
+  points: 10,
+  timeLimit: 35,
+  text: "Homocysteine remethylation to methionine requires:",
+  options: [
+    "Vitamin B1 and B2",
+    "Vitamin B6 and biotin",
+    "Vitamin B12 and folate",
+    "Vitamin C and K"
+  ],
+  answer: "C",
+  acceptedAnswers: ["C"],
+  explanation: "Methionine synthase requires B12 and folate for homocysteine remethylation. → CO2.2 (One-carbon metabolism)"
+},
+  {
+  id: "eq-45",
+  type: "mcq",
+  co: "CO2.2",
+  points: 10,
+  timeLimit: 30,
+  text: "The glycine cleavage system primarily functions in:",
+  options: [
+    "Synthesis of urea in liver mitochondria",
+    "Conversion of glycine to serine with one-carbon transfer",
+    "Breakdown of leucine to acetyl-CoA",
+    "Conversion of phenylalanine to tyrosine"
+  ],
+  answer: "B",
+  acceptedAnswers: ["B"],
+  explanation: "The glycine cleavage system (GCS) converts glycine to CO₂, NH₃, and a one-carbon unit transferred to tetrahydrofolate, forming 5,10-methylene-THF and contributing to serine synthesis. → CO2.2 (Nitrogen metabolism and one-carbon metabolism)"
+},
+{
+  id: "eq-46",
+  type: "mcq",
+  co: "CO2.2",
+  points: 10,
+  timeLimit: 30,
+  text: "The end product of nitrogen metabolism in humans is:",
+  options: [
+    "Ammonia",
+    "Uric acid",
+    "Urea",
+    "Creatinine"
+  ],
+  answer: "C",
+  acceptedAnswers: ["C"],
+  explanation: "Urea is the major end product of nitrogen metabolism in humans, formed in the liver via the urea cycle. → CO2.2 (Nitrogen metabolism and inborn errors)"
+},
+
+{
+  id: "eq-47",
+  type: "mcq",
+  co: "CO2.2",
+  points: 10,
+  timeLimit: 30,
+  text: "Transport form of ammonia from muscle is:",
+  options: [
+    "Glutamate",
+    "Alanine",
+    "Urea",
+    "Aspartate"
+  ],
+  answer: "B",
+  acceptedAnswers: ["B"],
+  explanation: "Alanine transports nitrogen from muscle to liver via the glucose-alanine cycle. → CO2.2 (Nitrogen transport and metabolism)"
+},
+
+{
+  id: "eq-48",
+  type: "mcq",
+  co: "CO2.1",
+  points: 10,
+  timeLimit: 30,
+  text: "Protein digestion begins in:",
+  options: [
+    "Mouth",
+    "Stomach",
+    "Intestine",
+    "Liver"
+  ],
+  answer: "B",
+  acceptedAnswers: ["B"],
+  explanation: "Protein digestion begins in the stomach via pepsin acting in acidic pH. → CO2.1 (Amino acids and protein chemistry)"
+},
+
+{
+  id: "eq-49",
+  type: "mcq",
+  co: "CO2.2",
+  points: 10,
+  timeLimit: 30,
+  text: "Nitrogen balance is positive in:",
+  options: [
+    "Starvation",
+    "Trauma",
+    "Growth",
+    "Infection"
+  ],
+  answer: "C",
+  acceptedAnswers: ["C"],
+  explanation: "Positive nitrogen balance occurs in growth, pregnancy, and recovery due to protein synthesis exceeding breakdown. → CO2.2 (Protein metabolism)"
+},
+
+  {
+    id: "eq-50",
+    type: "mcq",
+    co: "CO2.1",
+    points: 10,
+    timeLimit: 30,
+    text: "Purely ketogenic amino acids are:",
+    options: [
+      "Leucine, Lysine",
+      "Alanine, Glycine",
+      "Tyrosine, Phenylalanine",
+      "Methionine, Valine"
+    ],
+    answer: "A",
+    acceptedAnswers: ["A"],
+    explanation: "Leucine and Lysine are purely ketogenic amino acids; they form only ketone bodies and not glucose. → CO2.1 (Amino acid metabolism)"
   }
 
-  /* ─────────────────────────────────────────────────────
-     ADD MORE QUESTIONS BELOW following the same format.
-     Paste a block from above, change id, co, text, etc.
-  ───────────────────────────────────────────────────── */
-];
+];   // ✅ ONLY ONE closing bracket needed
 
 /* ─────────────────────────────────────────
    DEFAULT COURSE OUTCOMES
    Edit / add more inside the array.
 ───────────────────────────────────────── */
 const DEFAULT_COs = [
-  { id:"CO1.1", name:"Understand amino acid structure, classification and properties" },
-  { id:"CO1.2", name:"Apply knowledge of inborn errors of amino acid metabolism" },
-  { id:"CO2.1", name:"Analyse urea cycle, nitrogen metabolism and ammonia disposal" },
-  { id:"CO2.2", name:"Evaluate enzyme deficiency diseases and their clinical features" },
-  { id:"CO3.1", name:"Understand vitamins, coenzymes and one-carbon metabolism" }
+  
+  { 
+    id: "CO2.1", 
+    name: "Analyse amino acid chemistry, properties, protein structure, plasma proteins and immunoglobulins" 
+  },
+  { 
+    id: "CO2.2", 
+    name: "Evaluate nitrogen metabolism, derived products of amino acids and associated inborn errors" 
+  }
 ];
 
 /* ════════════════════════════════════════
