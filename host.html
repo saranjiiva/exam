@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Host Dashboard — Course Assessment</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+:root{
+  --bg:#07080d;--s1:#0f1018;--s2:#181924;--s3:#21222f;--s4:#2a2b3d;
+  --border:#2c2d3d;--border2:#3d3e56;
+  --accent:#5b8dee;--accent2:#3ecf8e;--warn:#f7b731;
+  --danger:#ff4757;--success:#2ed573;--purple:#a78bfa;
+  --text:#dde1f0;--muted:#6b7091;--subtle:#4a4e6b;
+  --font:'Sora',sans-serif;--mono:'IBM Plex Mono',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;overflow-x:hidden;}
+
+/* ── LOGIN ── */
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse 60% 40% at 50% 0%,rgba(91,141,238,.08),transparent);}
+.login-card{background:var(–s1);border:1.5px solid var(–border);border-radius:24px;padding:44px 40px;width:400px;text-align:center;}
+.login-icon{font-size:44px;margin-bottom:20px;}
+.login-card h2{font-size:22px;font-weight:800;margin-bottom:6px;letter-spacing:-.02em;}
+.login-card p{color:var(–muted);font-size:13px;margin-bottom:28px;}
+.inp{width:100%;padding:13px 16px;border-radius:12px;background:var(–s2);border:1.5px solid var(–border);color:var(–text);font-family:var(–font);font-size:15px;outline:none;transition:border-color .2s;margin-bottom:12px;}
+.inp:focus{border-color:var(–accent);}
+.btn{padding:11px 20px;border-radius:10px;border:none;font-family:var(–font);font-size:13px;font-weight:600;cursor:pointer;transition:opacity .15s,transform .1s;white-space:nowrap;}
+.btn:active{transform:scale(.97);}
+.btn:disabled{opacity:.35;cursor:not-allowed;}
+.btn-accent{background:linear-gradient(135deg,var(–accent),#3b6fd4);color:#fff;box-shadow:0 4px 16px rgba(91,141,238,.3);}
+.btn-success{background:linear-gradient(135deg,var(–accent2),#1daa72);color:#fff;}
+.btn-danger{background:var(–danger);color:#fff;}
+.btn-warn{background:var(–warn);color:#000;}
+.btn-ghost{background:var(–s3);border:1px solid var(–border2);color:var(–text);}
+.btn-purple{background:var(–purple);color:#fff;}
+.btn-full{width:100%;}
+
+/* ── DASHBOARD ── */
+#dashboard{display:none;}
+.topbar{background:var(–s1);border-bottom:1px solid var(–border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topbar-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:10px;}
+.topbar-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.online-pill{background:rgba(46,213,115,.1);border:1px solid var(–success);border-radius:100px;padding:4px 12px;font-size:12px;font-weight:600;color:var(–success);}
+.dash-layout{display:grid;grid-template-columns:1fr 360px;height:calc(100vh - 57px);}
+.left-pane{padding:20px 24px;overflow-y:auto;}
+.right-pane{background:var(–s1);border-left:1px solid var(–border);padding:18px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:2px;background:var(–s2);border-radius:12px;padding:3px;margin-bottom:18px;}
+.tab{flex:1;padding:8px;border-radius:9px;border:none;background:transparent;color:var(–muted);font-family:var(–font);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;text-align:center;}
+.tab.active{background:var(–s1);color:var(–text);border:1px solid var(–border);}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+
+/* ── SECTION TITLE ── */
+.sec{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(–muted);margin-bottom:12px;}
+
+/* ── CARDS ── */
+.card{background:var(–s2);border:1px solid var(–border);border-radius:16px;padding:16px;margin-bottom:14px;}
+
+/* ── LEADERBOARD ── */
+.group-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.gc{background:var(–s1);border:1.5px solid var(–border);border-radius:16px;padding:14px;text-align:center;position:relative;transition:border-color .3s;}
+.gc.lead{border-color:var(–warn);}
+.gc-name{font-size:12px;font-weight:600;margin-bottom:2px;}
+.gc-score{font-size:26px;font-weight:800;font-family:var(–mono);}
+.gc-members{font-size:11px;color:var(–muted);margin-top:3px;}
+
+/* ── BAR CHART ── */
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.bar-label{font-size:12px;font-weight:500;width:60px;flex-shrink:0;}
+.bar-track{flex:1;height:22px;background:var(–s3);border-radius:6px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:6px;transition:width .5s ease;display:flex;align-items:center;padding-left:8px;}
+.bar-val{font-size:11px;font-weight:600;color:#fff;font-family:var(–mono);}
+
+/* ── PLAYER TABLE ── */
+.ptable{width:100%;border-collapse:collapse;font-size:12px;}
+.ptable th{text-align:left;padding:7px 10px;color:var(–muted);font-size:10px;font-weight:700;text-transform:uppercase;border-bottom:1px solid var(–border);}
+.ptable td{padding:8px 10px;border-bottom:1px solid rgba(44,45,61,.5);}
+.ptable tr:last-child td{border-bottom:none;}
+.ptable tr:hover td{background:var(–s3);}
+
+/* ── CO TABLE ── */
+.co-table{width:100%;border-collapse:collapse;font-size:12px;}
+.co-table th{text-align:left;padding:7px 10px;color:var(–muted);font-size:10px;font-weight:700;text-transform:uppercase;border-bottom:1px solid var(–border);background:var(–s3);}
+.co-table td{padding:8px 10px;border-bottom:1px solid rgba(44,45,61,.5);}
+.level-badge{display:inline-block;border-radius:6px;padding:2px 8px;font-size:10px;font-weight:700;font-family:var(–mono);}
+.l3{background:rgba(46,213,115,.15);color:var(–success);}
+.l2{background:rgba(91,141,238,.15);color:var(–accent);}
+.l1{background:rgba(247,183,49,.15);color:var(–warn);}
+.l0{background:rgba(255,71,87,.15);color:var(–danger);}
+
+/* ── CONTROL ── */
+.status-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+.sdot{width:9px;height:9px;border-radius:50%;background:var(–s4);}
+.sdot.live{background:var(–success);animation:sdotP 1.5s infinite;}
+.sdot.lobby{background:var(–warn);}
+@keyframes sdotP{50%{opacity:.3}}
+.slabel{font-size:13px;font-weight:600;}
+.btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.q-preview-box{background:var(–bg);border:1px solid var(–border);border-radius:10px;padding:12px;font-size:12px;line-height:1.55;color:var(–muted);margin-bottom:10px;min-height:56px;}
+.q-preview-box strong{color:var(–text);}
+.timer-ctrl{display:flex;align-items:center;gap:10px;margin-top:8px;}
+.timer-ctrl input[type=range]{flex:1;accent-color:var(–warn);}
+.timer-val{font-family:var(–mono);font-size:13px;font-weight:600;color:var(–warn);min-width:34px;}
+.live-timer{text-align:center;padding:12px;background:var(–bg);border-radius:10px;border:1px solid var(–border);margin-top:8px;}
+.live-num{font-size:40px;font-weight:800;font-family:var(–mono);color:var(–warn);}
+.live-num.danger{color:var(–danger);}
+
+/* ── TALLY ── */
+.tally-row{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.tally-key{font-size:11px;font-weight:700;width:20px;font-family:var(–mono);color:var(–accent);}
+.tally-track{flex:1;height:16px;background:var(–bg);border-radius:4px;overflow:hidden;}
+.tally-fill{height:100%;background:var(–accent);border-radius:4px;transition:width .4s;}
+.tally-count{font-size:11px;font-family:var(–mono);color:var(–muted);width:20px;text-align:right;}
+
+/* ── Q EDITOR ── */
+.q-editor{background:var(–bg);border:1px solid var(–border);border-radius:12px;padding:16px;margin-bottom:10px;}
+.qe-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;}
+.qe-field{display:flex;flex-direction:column;gap:4px;}
+.qe-label{font-size:10px;font-weight:700;color:var(–muted);text-transform:uppercase;letter-spacing:.08em;}
+.qe-inp{padding:9px 12px;border-radius:9px;background:var(–s2);border:1px solid var(–border);color:var(–text);font-family:var(–font);font-size:13px;outline:none;transition:border-color .2s;width:100%;}
+.qe-inp:focus{border-color:var(–accent);}
+.qe-ta{padding:9px 12px;border-radius:9px;background:var(–s2);border:1px solid var(–border);color:var(–text);font-family:var(–font);font-size:13px;outline:none;transition:border-color .2s;width:100%;resize:vertical;min-height:80px;}
+.qe-ta:focus{border-color:var(–accent);}
+select.qe-inp{appearance:none;cursor:pointer;}
+.q-item{background:var(–s2);border:1px solid var(–border);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;cursor:pointer;transition:border-color .2s;}
+.q-item:hover{border-color:var(–border2);}
+.q-item.dispatch{border-color:var(–accent2);background:rgba(62,207,142,.05);}
+.q-item-main{flex:1;min-width:0;}
+.q-item-text{font-size:12px;line-height:1.5;color:var(–muted);margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.q-item-meta{display:flex;gap:6px;flex-wrap:wrap;}
+.meta-pill{font-size:10px;font-weight:600;border-radius:6px;padding:2px 7px;font-family:var(–mono);}
+.co-pill-q{background:rgba(62,207,142,.1);color:var(–accent2);border:1px solid rgba(62,207,142,.2);}
+.type-pill{background:rgba(91,141,238,.1);color:var(–accent);border:1px solid rgba(91,141,238,.2);}
+.pts-pill{background:rgba(247,183,49,.1);color:var(–warn);border:1px solid rgba(247,183,49,.2);}
+.q-item-actions{display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+
+/* ── SESSION HISTORY ── */
+.session-card{background:var(–s2);border:1px solid var(–border);border-radius:14px;padding:14px;margin-bottom:10px;}
+.session-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.session-title{font-size:13px;font-weight:600;}
+.session-meta{font-size:11px;color:var(–muted);margin-bottom:10px;}
+
+/* ── ANSWER REVEAL ── */
+.ans-reveal{background:rgba(46,213,115,.06);border:1px solid rgba(46,213,115,.25);border-radius:12px;padding:14px;font-size:13px;line-height:1.6;color:var(–success);}
+
+/* ── RESPONSE BAR ── */
+.resp-bar-wrap{height:8px;background:var(–s3);border-radius:4px;overflow:hidden;margin-bottom:4px;}
+.resp-bar-fill{height:100%;background:var(–accent2);border-radius:4px;transition:width .4s;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(–s2);border:1px solid var(–border);padding:10px 18px;border-radius:12px;font-size:13px;font-weight:500;transform:translateY(70px);transition:transform .3s;z-index:999;box-shadow:0 4px 24px rgba(0,0,0,.4);}
+.toast.show{transform:translateY(0);}
+.toast.ok{border-color:var(–success);color:var(–success);}
+.toast.err{border-color:var(–danger);color:var(–danger);}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-bg.open{display:flex;}
+.modal{background:var(–s1);border:1.5px solid var(–border);border-radius:20px;padding:28px;width:100%;max-width:600px;max-height:90vh;overflow-y:auto;}
+.modal h3{font-size:18px;font-weight:700;margin-bottom:20px;}
+</style>
+
+</head>
+<body>
+
+<!-- LOGIN -->
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-icon">🎓</div>
+    <h2>Host Dashboard</h2>
+    <p>Course Assessment System</p>
+    <input class="inp" type="password" id="host-pw" placeholder="Host password" onkeydown="if(event.key==='Enter')hostLogin()">
+    <button class="btn btn-accent btn-full" onclick="hostLogin()">Enter Dashboard →</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+
+<div id="dashboard">
+  <div class="topbar">
+    <div class="topbar-title">🎓 Host Dashboard</div>
+    <div class="topbar-right">
+      <span class="online-pill" id="online-count">0 online</span>
+      <button class="btn btn-ghost" onclick="openSessionModal()">📚 Sessions</button>
+      <button class="btn btn-success" onclick="exportExcel()">📊 Export Excel</button>
+      <button class="btn btn-warn" onclick="resetScores()">Reset Scores</button>
+      <button class="btn btn-danger" onclick="fullReset()">Full Reset</button>
+      <button class="btn btn-danger" onclick="endQuiz()">End Quiz</button>
+    </div>
+  </div>
+
+  <div class="dash-layout">
+
+```
+<!-- LEFT -->
+<div class="left-pane">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('scores',this)">Leaderboard</button>
+    <button class="tab" onclick="switchTab('players',this)">Players</button>
+    <button class="tab" onclick="switchTab('co',this)">Course Outcomes</button>
+    <button class="tab" onclick="switchTab('questions',this)">Questions</button>
+    <button class="tab" onclick="switchTab('live',this)">Live</button>
+  </div>
+
+  <!-- SCORES -->
+  <div class="tab-pane active" id="tab-scores">
+    <div class="sec">Leaderboard</div>
+    <div class="group-grid" id="group-grid"></div>
+    <div class="sec" style="margin-top:4px;">Score Chart</div>
+    <div id="bar-chart"></div>
+  </div>
+
+  <!-- PLAYERS -->
+  <div class="tab-pane" id="tab-players">
+    <div class="sec">All Players (<span id="player-count">0</span>)</div>
+    <table class="ptable">
+      <thead><tr><th>#</th><th>Name</th><th>Roll No.</th><th>Score</th><th>Correct</th><th>Answered</th></tr></thead>
+      <tbody id="player-tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- CO -->
+  <div class="tab-pane" id="tab-co">
+    <div class="sec">Course Outcome Analysis</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Level 3 ≥70% &nbsp;·&nbsp; Level 2: 60–69% &nbsp;·&nbsp; Level 1: 50–59% &nbsp;·&nbsp; Level 0 &lt;50%</div>
+    <div style="overflow-x:auto;">
+      <table class="co-table" id="co-table">
+        <thead>
+          <tr id="co-thead"></tr>
+        </thead>
+        <tbody id="co-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div class="tab-pane" id="tab-questions">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+      <div class="sec" style="margin-bottom:0;">Question Bank (<span id="q-bank-count">0</span>)</div>
+      <button class="btn btn-accent" onclick="openQModal()">+ Add Question</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+      <select class="inp" style="width:auto;margin:0;padding:7px 12px;font-size:12px;" id="filter-co" onchange="renderQBank()">
+        <option value="">All COs</option>
+      </select>
+      <select class="inp" style="width:auto;margin:0;padding:7px 12px;font-size:12px;" id="filter-type" onchange="renderQBank()">
+        <option value="">All Types</option>
+        <option value="mcq">MCQ</option>
+        <option value="assertion">Assertion-Reason</option>
+        <option value="fitb">Fill in Blank</option>
+        <option value="whoami">Who Am I</option>
+        <option value="sequence">Sequence</option>
+        <option value="match">Match</option>
+        <option value="connection">Connection</option>
+        <option value="error">Error Spotting</option>
+      </select>
+    </div>
+    <div id="q-bank-list"></div>
+  </div>
+
+  <!-- LIVE -->
+  <div class="tab-pane" id="tab-live">
+    <div class="sec">Answer Distribution</div>
+    <div id="tally-area"><div style="color:var(--muted);font-size:13px;padding:16px 0;">Start a question to see live answers.</div></div>
+    <div style="margin-top:16px;">
+      <div class="sec">Response Rate</div>
+      <div class="resp-bar-wrap"><div id="resp-fill" class="resp-bar-fill" style="width:0%"></div></div>
+      <div style="font-size:12px;color:var(--muted);"><span id="resp-num">0</span> / <span id="resp-total">0</span> responded</div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT: CONTROLS -->
+<div class="right-pane">
+
+  <!-- Status -->
+  <div class="card">
+    <div class="status-row">
+      <div class="sdot" id="sdot"></div>
+      <span class="slabel" id="slabel">Lobby — waiting</span>
+    </div>
+    <div class="btn-grid">
+      <button class="btn btn-success" onclick="openLobby()">Open Lobby</button>
+      <button class="btn btn-ghost" onclick="sendToLobby()">← Back to Lobby</button>
+    </div>
+  </div>
+
+  <!-- Send Question -->
+  <div class="card">
+    <div class="sec">Dispatch Question</div>
+    <div style="font-size:11px;color:var(--muted);margin-bottom:6px;">Select from Question Bank</div>
+    <select class="qe-inp" id="dispatch-sel" onchange="previewDispatch()" style="width:100%;margin-bottom:10px;">
+      <option value="">— choose a question —</option>
+    </select>
+    <div class="q-preview-box" id="q-preview-box">Select a question to preview.</div>
+    <div class="timer-ctrl">
+      <span style="font-size:11px;color:var(--muted);">Timer</span>
+      <input type="range" min="10" max="120" step="5" value="30" id="timer-range" oninput="document.getElementById('timer-val').textContent=this.value+'s'">
+      <span class="timer-val" id="timer-val">30s</span>
+    </div>
+    <div style="margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+      <button class="btn btn-accent" onclick="sendQuestion()">▶ Send</button>
+      <button class="btn btn-ghost" onclick="revealAnswer()">Show Answer</button>
+    </div>
+  </div>
+
+  <!-- Live Timer -->
+  <div class="card" id="live-timer-card" style="display:none;">
+    <div class="sec">Time Remaining</div>
+    <div class="live-timer">
+      <div class="live-num" id="host-timer">--</div>
+    </div>
+    <button class="btn btn-danger btn-full" style="margin-top:8px;" onclick="stopQuestion()">Stop Question</button>
+    <div id="host-tally" style="margin-top:10px;"></div>
+  </div>
+
+  <!-- Answer Reveal -->
+  <div class="card" id="ans-reveal-card" style="display:none;">
+    <div class="sec">Correct Answer</div>
+    <div class="ans-reveal" id="ans-reveal-display"></div>
+  </div>
+
+</div>
+```
+
+  </div>
+</div>
+
+<!-- ADD QUESTION MODAL -->
+
+<div class="modal-bg" id="q-modal">
+  <div class="modal">
+    <h3>Add / Edit Question</h3>
+    <div class="q-editor" id="q-form">
+      <div class="qe-row">
+        <div class="qe-field">
+          <div class="qe-label">Question Type</div>
+          <select class="qe-inp" id="qf-type" onchange="updateQForm()">
+            <option value="mcq">MCQ</option>
+            <option value="assertion">Assertion-Reason</option>
+            <option value="fitb">Fill in the Blank</option>
+            <option value="whoami">Who Am I?</option>
+            <option value="sequence">Sequence Arrange</option>
+            <option value="match">Match the Following</option>
+            <option value="connection">Connection Round</option>
+            <option value="error">Error Spotting</option>
+          </select>
+        </div>
+        <div class="qe-field">
+          <div class="qe-label">Course Outcome (CO)</div>
+          <select class="qe-inp" id="qf-co">
+            <option value="">-- select CO --</option>
+          </select>
+        </div>
+      </div>
+      <div class="qe-row">
+        <div class="qe-field">
+          <div class="qe-label">Points</div>
+          <input class="qe-inp" type="number" id="qf-pts" value="10" min="1" max="50">
+        </div>
+        <div class="qe-field">
+          <div class="qe-label">Default Timer (s)</div>
+          <input class="qe-inp" type="number" id="qf-timer" value="30" min="10" max="120">
+        </div>
+      </div>
+      <div class="qe-field" style="margin-bottom:8px;">
+        <div class="qe-label">Question Text</div>
+        <textarea class="qe-ta" id="qf-text" placeholder="Enter the full question text…"></textarea>
+      </div>
+      <div id="qf-dynamic"></div>
+      <div class="qe-field" style="margin-bottom:8px;">
+        <div class="qe-label">Answer / Accepted Answers (comma-separated)</div>
+        <input class="qe-inp" id="qf-answer" placeholder="e.g. A  or  phenylalanine, phe">
+      </div>
+      <div class="qe-field" style="margin-bottom:12px;">
+        <div class="qe-label">Explanation</div>
+        <textarea class="qe-ta" id="qf-expl" placeholder="Explanation shown after session ends…" style="min-height:60px;"></textarea>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-accent" onclick="saveQuestion()">Save Question</button>
+      <button class="btn btn-ghost" onclick="closeModal('q-modal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- CO MANAGEMENT MODAL -->
+
+<div class="modal-bg" id="co-modal">
+  <div class="modal">
+    <h3>Manage Course Outcomes</h3>
+    <div id="co-list-edit" style="margin-bottom:16px;"></div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <input class="qe-inp" id="new-co-id" placeholder="CO ID e.g. CO1.1" style="flex:1;">
+      <input class="qe-inp" id="new-co-name" placeholder="Description e.g. Understand amino acid metabolism" style="flex:2;">
+      <button class="btn btn-accent" onclick="addCO()">Add</button>
+    </div>
+    <button class="btn btn-ghost" onclick="closeModal('co-modal')">Close</button>
+  </div>
+</div>
+
+<!-- SESSION HISTORY MODAL -->
+
+<div class="modal-bg" id="session-modal">
+  <div class="modal">
+    <h3>Session History</h3>
+    <div id="session-list" style="margin-bottom:16px;"></div>
+    <button class="btn btn-ghost" onclick="closeModal('session-modal')">Close</button>
+  </div>
+</div>
+
+<div class="toast" id="host-toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, remove, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCxCexZLH3m2bni7wZ3Wqvs3BzJHzh9fxc",
+  authDomain: "tues-2f354.firebaseapp.com",
+  databaseURL: "https://tues-2f354-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tues-2f354",
+  storageBucket: "tues-2f354.firebasestorage.app",
+  messagingSenderId: "41087849708",
+  appId: "1:41087849708:web:25c1f91d54858a2111c1c9",
+  measurementId: "G-S6Z5JJ97CB"
+};
+
+const HOST_PASSWORD = "host2024"; // ← Change this
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ── STATE ──
+let players={}, questions=[], courseOutcomes=[], sessions=[];
+let qIndex=0, currentQData=null, hostTimerInt=null, editingQId=null;
+let sessionId=Date.now().toString();
+
+// ══════════════════════════════════
+// LOGIN
+// ══════════════════════════════════
+window.hostLogin=function(){
+  if(document.getElementById('host-pw').value===HOST_PASSWORD){
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    initDash();
+  } else { toast('Wrong password','err'); }
+};
+
+function initDash(){
+  loadCOs();
+  loadQuestions();
+  loadSessions();
+
+  onValue(ref(db,'players'),snap=>{
+    players=snap.val()||{};
+    updateLeaderboard();
+    updatePlayerTable();
+    updateCOTable();
+    updateOnlineCount();
+    updateResponseRate();
+  });
+
+  onValue(ref(db,'gameState'),snap=>{
+    const s=snap.val();
+    if(!s) return;
+    updateStatus(s.status);
+  });
+}
+
+// ══════════════════════════════════
+// COURSE OUTCOMES
+// ══════════════════════════════════
+async function loadCOs(){
+  const snap=await get(ref(db,'courseOutcomes'));
+  courseOutcomes=snap.val()?Object.values(snap.val()):[];
+  if(courseOutcomes.length===0){
+    // Default COs
+    courseOutcomes=[
+      {id:'CO1.1',name:'Understand amino acid structure and classification'},
+      {id:'CO1.2',name:'Apply knowledge of protein metabolism disorders'},
+      {id:'CO2.1',name:'Analyse urea cycle and nitrogen metabolism'},
+      {id:'CO2.2',name:'Evaluate enzyme deficiency diseases'},
+      {id:'CO3.1',name:'Understand vitamins and coenzymes'},
+    ];
+    await set(ref(db,'courseOutcomes'),courseOutcomes.reduce((a,c)=>{a[c.id]=c;return a;},{}));
+  }
+  renderCOSelects();
+  renderCOEditList();
+}
+
+function renderCOSelects(){
+  const coSels=['qf-co','filter-co'];
+  coSels.forEach(id=>{
+    const sel=document.getElementById(id);
+    if(!sel) return;
+    const prev=sel.value;
+    sel.innerHTML=id==='filter-co'?'<option value="">All COs</option>':'<option value="">-- select CO --</option>';
+    courseOutcomes.forEach(co=>{
+      const opt=document.createElement('option');
+      opt.value=co.id; opt.textContent=`${co.id} — ${co.name}`;
+      sel.appendChild(opt);
+    });
+    sel.value=prev;
+  });
+}
+
+function renderCOEditList(){
+  const el=document.getElementById('co-list-edit');
+  if(!el) return;
+  el.innerHTML='';
+  courseOutcomes.forEach(co=>{
+    const row=document.createElement('div');
+    row.style='display:flex;align-items:center;gap:8px;margin-bottom:8px;';
+    row.innerHTML=`<span style="font-family:var(--mono);font-size:12px;color:var(--accent2);width:80px;flex-shrink:0;">${co.id}</span><span style="font-size:13px;flex:1;">${co.name}</span><button class="btn btn-danger" style="padding:6px 10px;font-size:11px;" onclick="removeCO('${co.id}')">✕</button>`;
+    el.appendChild(row);
+  });
+}
+
+window.addCO=async function(){
+  const id=document.getElementById('new-co-id').value.trim();
+  const name=document.getElementById('new-co-name').value.trim();
+  if(!id||!name){ toast('Enter CO ID and name','err'); return; }
+  if(courseOutcomes.find(c=>c.id===id)){ toast('CO already exists','err'); return; }
+  courseOutcomes.push({id,name});
+  await set(ref(db,'courseOutcomes/'+id),{id,name});
+  document.getElementById('new-co-id').value='';
+  document.getElementById('new-co-name').value='';
+  renderCOSelects(); renderCOEditList();
+  toast('CO added','ok');
+};
+
+window.removeCO=async function(id){
+  if(!confirm('Remove '+id+'?')) return;
+  courseOutcomes=courseOutcomes.filter(c=>c.id!==id);
+  await remove(ref(db,'courseOutcomes/'+id));
+  renderCOSelects(); renderCOEditList();
+  toast('CO removed','ok');
+};
+
+// ══════════════════════════════════
+// QUESTION BANK
+// ══════════════════════════════════
+async function loadQuestions(){
+  const snap=await get(ref(db,'questions'));
+  questions=snap.val()?Object.values(snap.val()):[];
+  renderQBank();
+  populateDispatchSel();
+  document.getElementById('q-bank-count').textContent=questions.length;
+}
+
+window.renderQBank=function(){
+  const filterCO=document.getElementById('filter-co').value;
+  const filterType=document.getElementById('filter-type').value;
+  const list=document.getElementById('q-bank-list');
+  list.innerHTML='';
+  const filtered=questions.filter(q=>(!filterCO||q.co===filterCO)&&(!filterType||q.type===filterType));
+  if(filtered.length===0){ list.innerHTML='<div style="color:var(--muted);font-size:13px;padding:16px 0;">No questions yet. Add some using the button above.</div>'; return; }
+  filtered.forEach(q=>{
+    const div=document.createElement('div');
+    div.className='q-item '+(currentQData&&currentQData.id===q.id?'dispatch':'');
+    div.innerHTML=`
+      <div class="q-item-main">
+        <div class="q-item-text">${q.text}</div>
+        <div class="q-item-meta">
+          <span class="meta-pill co-pill-q">${q.co||'—'}</span>
+          <span class="meta-pill type-pill">${q.type}</span>
+          <span class="meta-pill pts-pill">${q.points||10}pts</span>
+          <span class="meta-pill" style="background:var(--s3);color:var(--muted);border:1px solid var(--border);">${q.timeLimit||30}s</span>
+        </div>
+      </div>
+      <div class="q-item-actions">
+        <button class="btn btn-accent" style="padding:5px 10px;font-size:11px;" onclick="quickDispatch('${q.id}')">▶ Send</button>
+        <button class="btn btn-ghost" style="padding:5px 10px;font-size:11px;" onclick="editQ('${q.id}')">Edit</button>
+        <button class="btn btn-danger" style="padding:5px 10px;font-size:11px;" onclick="deleteQ('${q.id}')">Del</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+};
+
+function populateDispatchSel(){
+  const sel=document.getElementById('dispatch-sel');
+  const prev=sel.value;
+  sel.innerHTML='<option value="">— choose a question —</option>';
+  questions.forEach(q=>{
+    const opt=document.createElement('option');
+    opt.value=q.id;
+    opt.textContent=`[${q.co||'—'}] ${q.text.substring(0,60)}…`;
+    sel.appendChild(opt);
+  });
+  sel.value=prev;
+}
+
+window.openQModal=function(){ editingQId=null; resetQForm(); updateQForm(); document.getElementById('q-modal').classList.add('open'); };
+
+window.editQ=function(id){
+  const q=questions.find(x=>x.id===id);
+  if(!q) return;
+  editingQId=id;
+  document.getElementById('qf-type').value=q.type||'mcq';
+  document.getElementById('qf-co').value=q.co||'';
+  document.getElementById('qf-pts').value=q.points||10;
+  document.getElementById('qf-timer').value=q.timeLimit||30;
+  document.getElementById('qf-text').value=q.text||'';
+  document.getElementById('qf-answer').value=Array.isArray(q.acceptedAnswers)?q.acceptedAnswers.join(', '):q.answer||'';
+  document.getElementById('qf-expl').value=q.explanation||'';
+  updateQForm(q);
+  document.getElementById('q-modal').classList.add('open');
+};
+
+window.deleteQ=async function(id){
+  if(!confirm('Delete this question?')) return;
+  questions=questions.filter(q=>q.id!==id);
+  await remove(ref(db,'questions/'+id));
+  renderQBank(); populateDispatchSel();
+  document.getElementById('q-bank-count').textContent=questions.length;
+  toast('Question deleted','ok');
+};
+
+function resetQForm(){
+  ['qf-type','qf-co','qf-answer','qf-expl'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('qf-pts').value=10;
+  document.getElementById('qf-timer').value=30;
+  document.getElementById('qf-text').value='';
+  document.getElementById('qf-type').value='mcq';
+}
+
+window.updateQForm=function(existing){
+  const type=document.getElementById('qf-type').value;
+  const dyn=document.getElementById('qf-dynamic');
+  dyn.innerHTML='';
+  if(type==='mcq'||type==='assertion'){
+    const keys=['A','B','C','D'];
+    const labels=type==='mcq'?['Option A','Option B','Option C','Option D']:['Both A&R true; R explains A','Both A&R true; R doesn\'t explain A','A true R false','A false R true'];
+    dyn.innerHTML='<div class="qe-label" style="margin-bottom:6px;">Options</div>';
+    keys.forEach((k,i)=>{
+      const row=document.createElement('div');
+      row.style='display:flex;align-items:center;gap:8px;margin-bottom:6px;';
+      row.innerHTML=`<span style="font-family:var(--mono);font-size:12px;color:var(--accent);width:20px;">${k}</span><input class="qe-inp" id="qf-opt-${k}" placeholder="${labels[i]||'Option '+k}" value="${existing?.(existing.options?.[i]||''):''}" style="flex:1;">`;
+      dyn.appendChild(row);
+    });
+  } else if(type==='whoami'||type==='connection'){
+    dyn.innerHTML='<div class="qe-label" style="margin-bottom:6px;">Clues (one per line)</div><textarea class="qe-ta" id="qf-clues" placeholder="Clue 1&#10;Clue 2&#10;Clue 3">'+(existing?.clues?existing.clues.join('\n'):'')+'</textarea>';
+
+} else if(type===‘sequence’){
+dyn.innerHTML=’<div class="qe-label" style="margin-bottom:6px;">Items to sequence (format: A: text, one per line)</div><textarea class="qe-ta" id="qf-seqitems" placeholder="A: First step&#10;B: Second step&#10;C: Third step">’+(existing?.items?existing.items.map(x=>x.key+’: ‘+x.text).join(’\n’):’’)+’</textarea>’;
+} else if(type===‘match’){
+dyn.innerHTML=’<div class="qe-label" style="margin-bottom:6px;">Left items (one per line)</div><textarea class="qe-ta" id="qf-matchleft" placeholder="Item 1&#10;Item 2&#10;Item 3" style="margin-bottom:8px;">’+(existing?.pairs?existing.pairs.map(p=>p.left).join(’\n’):’’)+’</textarea><div class="qe-label" style="margin-bottom:6px;">Right options (one per line)</div><textarea class="qe-ta" id="qf-matchright" placeholder="Option A&#10;Option B&#10;Option C">’+(existing?.rightOptions?existing.rightOptions.join(’\n’):’’)+’</textarea>’;
+}
+};
+
+window.saveQuestion=async function(){
+const type=document.getElementById(‘qf-type’).value;
+const co=document.getElementById(‘qf-co’).value;
+const pts=parseInt(document.getElementById(‘qf-pts’).value)||10;
+const timer=parseInt(document.getElementById(‘qf-timer’).value)||30;
+const text=document.getElementById(‘qf-text’).value.trim();
+const ansRaw=document.getElementById(‘qf-answer’).value.trim();
+const expl=document.getElementById(‘qf-expl’).value.trim();
+if(!text){ toast(‘Enter question text’,‘err’); return; }
+if(!co){ toast(‘Select a Course Outcome’,‘err’); return; }
+if(!ansRaw){ toast(‘Enter the answer’,‘err’); return; }
+
+const acceptedAnswers=ansRaw.split(’,’).map(s=>s.trim()).filter(Boolean);
+const answer=acceptedAnswers[0];
+const qObj={
+type,co,points:pts,timeLimit:timer,text,answer,acceptedAnswers,explanation:expl,
+id:editingQId||(‘q-’+Date.now())
+};
+
+if(type===‘mcq’||type===‘assertion’){
+qObj.options=[‘A’,‘B’,‘C’,‘D’].map(k=>(document.getElementById(‘qf-opt-’+k)||{}).value||’’).filter(Boolean);
+} else if(type===‘whoami’||type===‘connection’){
+qObj.clues=(document.getElementById(‘qf-clues’)?.value||’’).split(’\n’).map(s=>s.trim()).filter(Boolean);
+} else if(type===‘sequence’){
+qObj.items=(document.getElementById(‘qf-seqitems’)?.value||’’).split(’\n’).map(s=>s.trim()).filter(Boolean).map(s=>{ const [k,…rest]=s.split(’:’); return {key:k.trim(),text:rest.join(’:’).trim()}; });
+} else if(type===‘match’){
+qObj.pairs=(document.getElementById(‘qf-matchleft’)?.value||’’).split(’\n’).map(s=>s.trim()).filter(Boolean).map(s=>({left:s}));
+qObj.rightOptions=(document.getElementById(‘qf-matchright’)?.value||’’).split(’\n’).map(s=>s.trim()).filter(Boolean);
+}
+
+await set(ref(db,‘questions/’+qObj.id),qObj);
+if(editingQId){ questions=questions.map(q=>q.id===editingQId?qObj:q); }
+else { questions.push(qObj); }
+renderQBank(); populateDispatchSel();
+document.getElementById(‘q-bank-count’).textContent=questions.length;
+closeModal(‘q-modal’);
+toast(‘Question saved’,‘ok’);
+};
+
+// ══════════════════════════════════
+// DISPATCH
+// ══════════════════════════════════
+window.previewDispatch=function(){
+const sel=document.getElementById(‘dispatch-sel’).value;
+const q=questions.find(x=>x.id===sel);
+if(!q){ document.getElementById(‘q-preview-box’).innerHTML=‘Select a question to preview.’; return; }
+currentQData=q;
+document.getElementById(‘q-preview-box’).innerHTML=`<strong>[${q.type.toUpperCase()} · ${q.co}] </strong>${q.text.substring(0,180)}${q.text.length>180?'…':''}<br><span style="color:var(--warn);font-size:11px;">● ${q.points}pts &nbsp;·&nbsp; Default: ${q.timeLimit}s</span>`;
+document.getElementById(‘timer-range’).value=q.timeLimit||30;
+document.getElementById(‘timer-val’).textContent=(q.timeLimit||30)+‘s’;
+};
+
+window.quickDispatch=function(id){
+const q=questions.find(x=>x.id===id);
+if(!q) return;
+currentQData=q;
+document.getElementById(‘dispatch-sel’).value=id;
+previewDispatch();
+sendQuestion();
+};
+
+window.sendQuestion=async function(){
+if(!currentQData){ toast(‘Select a question first’,‘err’); return; }
+qIndex++;
+const timeLimit=parseInt(document.getElementById(‘timer-range’).value);
+await set(ref(db,‘gameState’),{
+status:‘question’, sessionId, qIndex, totalQ:questions.length,
+question:{…currentQData,timeLimit,index:qIndex},
+sentAt:Date.now()
+});
+toast(‘Question dispatched!’,‘ok’);
+document.getElementById(‘live-timer-card’).style.display=‘block’;
+document.getElementById(‘ans-reveal-card’).style.display=‘none’;
+startHostTimer(timeLimit);
+renderTally(currentQData);
+};
+
+function startHostTimer(s){
+clearInterval(hostTimerInt);
+let rem=s;
+const el=document.getElementById(‘host-timer’);
+el.textContent=rem; el.className=‘live-num’;
+hostTimerInt=setInterval(()=>{
+rem–;
+el.textContent=rem;
+if(rem<=10) el.className=‘live-num danger’;
+if(rem<=0){ clearInterval(hostTimerInt); stopQuestion(); }
+},1000);
+}
+
+window.stopQuestion=async function(){
+clearInterval(hostTimerInt);
+await set(ref(db,‘gameState/status’),‘waiting’);
+document.getElementById(‘live-timer-card’).style.display=‘none’;
+toast(‘Question stopped’,’’);
+};
+
+window.revealAnswer=function(){
+if(!currentQData) return;
+const card=document.getElementById(‘ans-reveal-card’);
+const disp=document.getElementById(‘ans-reveal-display’);
+card.style.display=‘block’;
+disp.innerHTML=`<strong>Answer:</strong> ${(currentQData.answer||'').toUpperCase()}<br><br><span style="color:var(--accent2);font-size:12px;">${currentQData.explanation||''}</span>`;
+};
+
+// ══════════════════════════════════
+// LOBBY / GAME
+// ══════════════════════════════════
+window.openLobby=async function(){
+sessionId=Date.now().toString();
+await set(ref(db,‘gameState’),{status:‘lobby’,sessionId,startedAt:Date.now()});
+toast(‘Lobby opened!’,‘ok’);
+};
+window.sendToLobby=async function(){ await set(ref(db,‘gameState/status’),‘lobby’); };
+window.endQuiz=async function(){
+if(!confirm(‘End quiz for all players?’)) return;
+clearInterval(hostTimerInt);
+await saveSession();
+await set(ref(db,‘gameState’),{status:‘ended’,endedAt:Date.now()});
+toast(‘Quiz ended’,’’);
+};
+
+async function saveSession(){
+const sessionData={
+id:sessionId, endedAt:Date.now(),
+players:JSON.parse(JSON.stringify(players)),
+questions:questions.map(q=>({id:q.id,co:q.co,points:q.points,text:q.text.substring(0,60)})),
+coList:courseOutcomes
+};
+await set(ref(db,‘sessions/’+sessionId),sessionData);
+sessions.push(sessionData);
+renderSessionList();
+}
+
+// ══════════════════════════════════
+// LEADERBOARD
+// ══════════════════════════════════
+function updateLeaderboard(){
+const playerArr=Object.values(players);
+const sorted=[…playerArr].sort((a,b)=>(b.score||0)-(a.score||0));
+const maxScore=Math.max(…playerArr.map(p=>p.score||0),1);
+
+// Top 6 players (or groups if you have them)
+const grid=document.getElementById(‘group-grid’);
+grid.innerHTML=’’;
+sorted.slice(0,6).forEach((p,i)=>{
+const card=document.createElement(‘div’);
+card.className=‘gc’+(i===0&&(p.score||0)>0?’ lead’:’’);
+card.innerHTML=`<div class="gc-name">${p.name}</div><div class="gc-score" style="color:var(--accent)">${p.score||0}</div><div class="gc-members">${p.roll||''}</div>`;
+grid.appendChild(card);
+});
+
+// Bar chart
+const chart=document.getElementById(‘bar-chart’);
+chart.innerHTML=’’;
+sorted.slice(0,8).forEach(p=>{
+const pct=Math.round((p.score||0)/maxScore*100);
+const row=document.createElement(‘div’); row.className=‘bar-row’;
+row.innerHTML=`<div class="bar-label" title="${p.name}">${p.name.split(' ')[0]}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:var(--accent)"><span class="bar-val">${p.score||0}</span></div></div>`;
+chart.appendChild(row);
+});
+}
+
+function updatePlayerTable(){
+const sorted=Object.values(players).sort((a,b)=>(b.score||0)-(a.score||0));
+const tbody=document.getElementById(‘player-tbody’);
+tbody.innerHTML=’’;
+sorted.forEach((p,i)=>{
+const tr=document.createElement(‘tr’);
+tr.innerHTML=`<td style="color:var(--muted)">${i+1}</td><td style="font-weight:500">${p.name}</td><td style="font-family:var(--mono);font-size:11px;color:var(--muted)">${p.roll||'—'}</td><td style="font-family:var(--mono);font-weight:600">${p.score||0}</td><td style="color:var(--success)">${p.correct||0}</td><td style="color:var(--muted)">${p.answered||0}</td>`;
+tbody.appendChild(tr);
+});
+document.getElementById(‘player-count’).textContent=sorted.length;
+}
+
+function updateOnlineCount(){
+const n=Object.values(players).filter(p=>p.online).length;
+document.getElementById(‘online-count’).textContent=n+’ online’;
+}
+
+// ══════════════════════════════════
+// CO ANALYSIS TABLE
+// ══════════════════════════════════
+function updateCOTable(){
+if(courseOutcomes.length===0) return;
+const playerArr=Object.values(players);
+
+// Build CO → {totalPossible, perStudent}
+const coIds=courseOutcomes.map(c=>c.id);
+
+// For each CO, calculate per-student attainment
+const coData={}; // coId → {level3,level2,level1,level0,attainments[]}
+coIds.forEach(co=>{ coData[co]={level3:0,level2:0,level1:0,level0:0,attainments:[]}; });
+
+const coQs={}; // coId → [q]
+coIds.forEach(co=>{ coQs[co]=questions.filter(q=>q.co===co); });
+
+playerArr.forEach(p=>{
+const pAnswers=p.answers||{};
+coIds.forEach(co=>{
+const qs=coQs[co];
+if(!qs.length) return;
+const totalPts=qs.reduce((a,q)=>a+(q.points||10),0);
+const earnedPts=qs.reduce((a,q)=>{
+const ans=pAnswers[q.id];
+return a+(ans&&ans.correct?(q.points||10):0);
+},0);
+const pct=totalPts>0?Math.round(earnedPts/totalPts*100):0;
+coData[co].attainments.push(pct);
+if(pct>=70) coData[co].level3++;
+else if(pct>=60) coData[co].level2++;
+else if(pct>=50) coData[co].level1++;
+else coData[co].level0++;
+});
+});
+
+// Render table
+const thead=document.getElementById(‘co-thead’);
+const tbody=document.getElementById(‘co-tbody’);
+thead.innerHTML=’<th>CO</th><th>Description</th><th>Q Count</th><th>Max Pts</th>’;
+[‘Level 3 (≥70%)’,‘Level 2 (60-69%)’,‘Level 1 (50-59%)’,‘Level 0 (<50%)’,‘Avg %’].forEach(l=>{
+const th=document.createElement(‘th’); th.textContent=l; thead.appendChild(th);
+});
+tbody.innerHTML=’’;
+courseOutcomes.forEach(co=>{
+const d=coData[co.id]||{level3:0,level2:0,level1:0,level0:0,attainments:[]};
+const qs=coQs[co.id]||[];
+const totalPts=qs.reduce((a,q)=>a+(q.points||10),0);
+const avg=d.attainments.length>0?Math.round(d.attainments.reduce((a,b)=>a+b,0)/d.attainments.length):0;
+const tr=document.createElement(‘tr’);
+tr.innerHTML=`<td style="font-family:var(--mono);font-size:11px;font-weight:600;color:var(--accent2)">${co.id}</td> <td style="font-size:12px;max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${co.name}">${co.name}</td> <td style="text-align:center;font-family:var(--mono)">${qs.length}</td> <td style="text-align:center;font-family:var(--mono)">${totalPts}</td> <td style="text-align:center;"><span class="level-badge l3">${d.level3}</span></td> <td style="text-align:center;"><span class="level-badge l2">${d.level2}</span></td> <td style="text-align:center;"><span class="level-badge l1">${d.level1}</span></td> <td style="text-align:center;"><span class="level-badge l0">${d.level0}</span></td> <td style="text-align:center;font-family:var(--mono);font-weight:600;color:${avg>=70?'var(--success)':avg>=60?'var(--accent)':avg>=50?'var(--warn)':'var(--danger)'}">${avg}%</td>`;
+tbody.appendChild(tr);
+});
+}
+
+// ══════════════════════════════════
+// LIVE / TALLY
+// ══════════════════════════════════
+function updateResponseRate(){
+if(!currentQData) return;
+const total=Object.keys(players).length;
+const responded=Object.values(players).filter(p=>p.lastAnswer&&p.lastAnswer.qIndex===qIndex).length;
+const pct=total>0?Math.round(responded/total*100):0;
+document.getElementById(‘resp-fill’).style.width=pct+’%’;
+document.getElementById(‘resp-num’).textContent=responded;
+document.getElementById(‘resp-total’).textContent=total;
+}
+
+function renderTally(q){
+const tally=document.getElementById(‘tally-area’);
+if(!q.options){ tally.innerHTML=’<div style="color:var(--muted);font-size:13px;">Live tally not available for this question type.</div>’; return; }
+tally.innerHTML=’<div class="sec" style="margin-bottom:8px;">Live Answer Tally</div>’;
+const keys=[‘A’,‘B’,‘C’,‘D’];
+keys.forEach(k=>{
+const row=document.createElement(‘div’); row.className=‘tally-row’;
+row.innerHTML=`<span class="tally-key">${k}</span><div class="tally-track"><div class="tally-fill" id="tally-fill-${k}" style="width:0%"></div></div><span class="tally-count" id="tally-count-${k}">0</span>`;
+tally.appendChild(row);
+});
+const interval=setInterval(()=>{
+const counts={A:0,B:0,C:0,D:0};
+Object.values(players).forEach(p=>{
+if(p.lastAnswer&&p.lastAnswer.qIndex===qIndex){
+const a=(p.lastAnswer.answer||’’).toUpperCase();
+if(counts[a]!==undefined) counts[a]++;
+}
+});
+const total=Object.values(counts).reduce((a,b)=>a+b,0)||1;
+keys.forEach(k=>{
+const f=document.getElementById(‘tally-fill-’+k);
+const c=document.getElementById(‘tally-count-’+k);
+if(f) f.style.width=Math.round(counts[k]/total*100)+’%’;
+if(c) c.textContent=counts[k];
+});
+if(!hostTimerInt) clearInterval(interval);
+},1000);
+}
+
+// ══════════════════════════════════
+// STATUS
+// ══════════════════════════════════
+function updateStatus(status){
+const dot=document.getElementById(‘sdot’); const label=document.getElementById(‘slabel’);
+dot.className=‘sdot’;
+if(status===‘question’){ dot.classList.add(‘live’); label.textContent=‘LIVE — Question active’; }
+else if(status===‘lobby’){ dot.classList.add(‘lobby’); label.textContent=‘Lobby — waiting for players’; }
+else if(status===‘waiting’){ label.textContent=‘Between questions’; }
+else if(status===‘ended’){ label.textContent=‘Session ended’; }
+}
+
+// ══════════════════════════════════
+// RESET
+// ══════════════════════════════════
+window.resetScores=async function(){
+if(!confirm(‘Reset all player scores?’)) return;
+const updates={};
+Object.keys(players).forEach(id=>{ updates[‘players/’+id+’/score’]=0; updates[‘players/’+id+’/answered’]=0; updates[‘players/’+id+’/correct’]=0; updates[‘players/’+id+’/answers’]={}; });
+for(const [path,val] of Object.entries(updates)){
+await set(ref(db,path),val);
+}
+toast(‘Scores reset’,‘ok’);
+};
+
+window.fullReset=async function(){
+if(!confirm(‘⚠️ DELETE all players, scores, and game state?’)) return;
+if(!confirm(‘This cannot be undone. Sure?’)) return;
+await remove(ref(db,‘players’));
+await remove(ref(db,‘gameState’));
+players={}; currentQData=null; qIndex=0;
+updateLeaderboard(); updatePlayerTable(); updateCOTable(); updateOnlineCount();
+document.getElementById(‘live-timer-card’).style.display=‘none’;
+document.getElementById(‘ans-reveal-card’).style.display=‘none’;
+updateStatus(‘lobby’);
+toast(‘Full reset done’,‘ok’);
+};
+
+// ══════════════════════════════════
+// SESSIONS
+// ══════════════════════════════════
+async function loadSessions(){
+const snap=await get(ref(db,‘sessions’));
+const raw=snap.val()||{};
+sessions=Object.values(raw).sort((a,b)=>b.endedAt-a.endedAt);
+renderSessionList();
+}
+
+function renderSessionList(){
+const el=document.getElementById(‘session-list’);
+if(!el) return;
+el.innerHTML=’’;
+if(sessions.length===0){ el.innerHTML=’<div style="color:var(--muted);font-size:13px;">No sessions saved yet.</div>’; return; }
+sessions.forEach(s=>{
+const div=document.createElement(‘div’); div.className=‘session-card’;
+const dt=new Date(s.endedAt||s.id*1).toLocaleString();
+const pCount=Object.values(s.players||{}).length;
+div.innerHTML=`<div class="session-header"> <div class="session-title">Session — ${dt}</div> <button class="btn btn-danger" style="padding:5px 10px;font-size:11px;" onclick="deleteSession('${s.id}')">Delete</button> </div> <div class="session-meta">${pCount} players &nbsp;·&nbsp; ${(s.questions||[]).length} questions</div> <div style="display:flex;gap:8px;"> <button class="btn btn-success" style="padding:7px 12px;font-size:12px;" onclick="exportSessionExcel('${s.id}')">📊 Export Excel</button> </div>`;
+el.appendChild(div);
+});
+}
+
+window.deleteSession=async function(id){
+if(!confirm(‘Delete this session?’)) return;
+await remove(ref(db,‘sessions/’+id));
+sessions=sessions.filter(s=>s.id!==id);
+renderSessionList();
+toast(‘Session deleted’,‘ok’);
+};
+
+window.openSessionModal=function(){
+loadSessions().then(()=>renderSessionList());
+document.getElementById(‘session-modal’).classList.add(‘open’);
+};
+
+// ══════════════════════════════════
+// EXCEL EXPORT
+// ══════════════════════════════════
+window.exportExcel=function(){ exportSessionExcel(null); };
+
+window.exportSessionExcel=function(sid){
+const session=sid?sessions.find(s=>s.id===sid):null;
+const pArr=session?Object.values(session.players||{}):Object.values(players);
+const qArr=session?session.questions:questions;
+const coArr=session?session.coList:courseOutcomes;
+
+const wb=XLSX.utils.book_new();
+
+// ── Sheet 1: Individual Scores ──
+const scoreRows=[[‘Name’,‘Roll No.’,‘Total Score’,‘Correct’,‘Answered’]];
+pArr.sort((a,b)=>(b.score||0)-(a.score||0)).forEach(p=>{
+scoreRows.push([p.name,p.roll||’’,p.score||0,p.correct||0,p.answered||0]);
+});
+const ws1=XLSX.utils.aoa_to_sheet(scoreRows);
+ws1[’!cols’]=[{wch:25},{wch:18},{wch:14},{wch:10},{wch:10}];
+XLSX.utils.book_append_sheet(wb,ws1,‘Individual Scores’);
+
+// ── Sheet 2: CO Scores per Student ──
+const coIds=coArr.map(c=>c.id);
+const coQMap={}; coIds.forEach(co=>{ coQMap[co]=qArr.filter(q=>q.co===co); });
+const coHeader=[‘Name’,‘Roll No.’,…coIds.flatMap(co=>[co+’ Score’,co+’ Max’,co+’ %’])];
+const coRows=[coHeader];
+pArr.forEach(p=>{
+const pAnswers=p.answers||{};
+const row=[p.name,p.roll||’’];
+coIds.forEach(co=>{
+const qs=coQMap[co]||[];
+const max=qs.reduce((a,q)=>a+(q.points||10),0);
+const earned=qs.reduce((a,q)=>{ const ans=pAnswers[q.id]; return a+(ans&&ans.correct?(q.points||10):0); },0);
+const pct=max>0?Math.round(earned/max*100):0;
+row.push(earned,max,pct);
+});
+coRows.push(row);
+});
+const ws2=XLSX.utils.aoa_to_sheet(coRows);
+ws2[’!cols’]=[{wch:25},{wch:18},…coIds.flatMap(()=>[{wch:12},{wch:10},{wch:8}])];
+XLSX.utils.book_append_sheet(wb,ws2,‘CO Student Scores’);
+
+// ── Sheet 3: CO Class Attainment ──
+const coClassHeader=[‘CO ID’,‘Description’,‘Total Questions’,‘Max Points’,‘Level 3 (≥70%)’,‘Level 2 (60-69%)’,‘Level 1 (50-59%)’,‘Level 0 (<50%)’,‘Class Avg %’];
+const coClassRows=[coClassHeader];
+coArr.forEach(co=>{
+const qs=coQMap[co.id]||[];
+const maxPts=qs.reduce((a,q)=>a+(q.points||10),0);
+let l3=0,l2=0,l1=0,l0=0,pcts=[];
+pArr.forEach(p=>{
+const pAnswers=p.answers||{};
+const earned=qs.reduce((a,q)=>{ const ans=pAnswers[q.id]; return a+(ans&&ans.correct?(q.points||10):0); },0);
+const pct=maxPts>0?Math.round(earned/maxPts*100):0;
+pcts.push(pct);
+if(pct>=70) l3++; else if(pct>=60) l2++; else if(pct>=50) l1++; else l0++;
+});
+const avg=pcts.length>0?Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length):0;
+coClassRows.push([co.id,co.name,qs.length,maxPts,l3,l2,l1,l0,avg]);
+});
+const ws3=XLSX.utils.aoa_to_sheet(coClassRows);
+ws3[’!cols’]=[{wch:12},{wch:45},{wch:16},{wch:12},{wch:18},{wch:18},{wch:18},{wch:18},{wch:14}];
+XLSX.utils.book_append_sheet(wb,ws3,‘CO Class Attainment’);
+
+// ── Sheet 4: Question Bank ──
+const qHeader=[‘Question ID’,‘Type’,‘CO’,‘Points’,‘Timer(s)’,‘Question’,‘Answer’,‘Explanation’];
+const qRows=[qHeader];
+qArr.forEach(q=>{ qRows.push([q.id,q.type||’’,q.co||’’,q.points||10,q.timeLimit||30,(q.text||’’).substring(0,150),q.answer||’’,q.explanation||’’]); });
+const ws4=XLSX.utils.aoa_to_sheet(qRows);
+ws4[’!cols’]=[{wch:18},{wch:12},{wch:10},{wch:8},{wch:10},{wch:60},{wch:20},{wch:60}];
+XLSX.utils.book_append_sheet(wb,ws4,‘Questions’);
+
+const fname=session?`session_${new Date(session.endedAt).toLocaleDateString('en-GB').replace(/\//g,'-')}.xlsx`:‘quiz_export.xlsx’;
+XLSX.writeFile(wb,fname);
+toast(‘Excel exported!’,‘ok’);
+};
+
+// ══════════════════════════════════
+// TABS / MODALS
+// ══════════════════════════════════
+window.switchTab=function(tab,btn){
+document.querySelectorAll(’.tab’).forEach(t=>t.classList.remove(‘active’));
+document.querySelectorAll(’.tab-pane’).forEach(p=>p.classList.remove(‘active’));
+btn.classList.add(‘active’);
+document.getElementById(‘tab-’+tab).classList.add(‘active’);
+if(tab===‘co’) updateCOTable();
+};
+
+window.closeModal=function(id){ document.getElementById(id).classList.remove(‘open’); };
+document.querySelectorAll(’.modal-bg’).forEach(m=>m.addEventListener(‘click’,e=>{ if(e.target===m) m.classList.remove(‘open’); }));
+
+// CO modal opener
+document.querySelector(’.topbar-title’).insertAdjacentHTML(‘afterend’,’’);
+(function addCOBtn(){
+const btn=document.createElement(‘button’);
+btn.className=‘btn btn-ghost’; btn.style=‘position:fixed;bottom:24px;left:24px;z-index:50;’;
+btn.textContent=‘🎯 Manage COs’;
+btn.onclick=()=>{ renderCOEditList(); document.getElementById(‘co-modal’).classList.add(‘open’); };
+document.body.appendChild(btn);
+})();
+
+function toast(msg,type){
+const t=document.getElementById(‘host-toast’);
+t.textContent=msg; t.className=’toast show ’+type;
+clearTimeout(t._t); t._t=setTimeout(()=>t.className=‘toast’,2500);
+}
+</script>
+
+</body>
+</html>
